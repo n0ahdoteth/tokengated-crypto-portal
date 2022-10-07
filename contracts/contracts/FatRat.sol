@@ -16,7 +16,7 @@ contract FatRat is Ownable, ERC1155Supply, ReentrancyGuard {
     uint256 private mintPrice = .01 ether;
     mapping(address => bool) internal hasClaimed;
 
-    constructor() public ERC1155() {}
+    constructor(string memory _uri) public ERC1155(_uri) {}
 
     function whitelistMint(bytes32[] calldata merkleProof) external payable{
         require(!hasClaimed[msg.sender], "Already minted your FatRat NFT");
