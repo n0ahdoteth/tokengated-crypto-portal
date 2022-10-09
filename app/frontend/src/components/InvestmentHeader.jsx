@@ -9,7 +9,7 @@ const InvestmentHeader = () => {
 				<Link to='/strategies' className='header-links'>
 					Fat Rat Radar
 				</Link>
-				<Link to='/strategies' className='header-links'>
+				<Link to='/add' className='header-links'>
 					Add
 				</Link>
 			</h1>
