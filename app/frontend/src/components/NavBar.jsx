@@ -1,9 +1,69 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { Container, Nav, Navbar, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import logo from '../images/fatrat.png';
+import { ethers } from 'ethers';
+import Web3 from 'web3';
+import detectEthereumProvider from '@metamask/detect-provider';
 
 const NavBar = () => {
+	const [currentAccount, setCurrentAccount] = useState('');
+	const [error, setError] = useState('');
+	const [isOnGoerli, setIsOnGoerli] = useState();
+	const shortenedAddress =
+		currentAccount.slice(0, 5) + '...' + currentAccount.slice(35, 40);
+
+	const { ethereum } = window;
+
+	const changeNetwork = async () => {
+		try {
+			if (!ethereum) throw new Error('No crypto wallet found');
+			await ethereum.request({
+				method: 'wallet_switchEthereumChain',
+				params: [
+					{
+						chainId: Web3.utils.toHex(5),
+					},
+				],
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const seeNetwork = async () => {
+		const provider = await detectEthereumProvider();
+		const chainIdTest = await provider.request({ method: 'eth_chainId' });
+		if (chainIdTest == 5) {
+			setIsOnGoerli(true);
+		} else {
+			setIsOnGoerli(false);
+		}
+	};
+
+	const handleNetworkSwitch = async () => {
+		setError();
+		await changeNetwork();
+		seeNetwork();
+	};
+
+	const connectWallet = async () => {
+		try {
+			if (!ethereum) {
+				alert('Get MetaMask!');
+				seeNetwork();
+				return;
+			}
+			const accounts = await ethereum.request({
+				method: 'eth_requestAccounts',
+			});
+			setCurrentAccount(accounts[0]);
+			seeNetwork();
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return (
 		<Navbar bg='black' expand='lg' variant='dark'>
 			<Container>
@@ -24,7 +84,13 @@ const NavBar = () => {
 						<Link to='/news' className='link-styling'>
 							News
 						</Link>
-						<Button id='connect-wallet-button'>Connect Wallet</Button>
+
+						{currentAccount === '' ? (
+							<Button onClick={connectWallet} id='connect-wallet-button'>Connect Wallet</Button>
+
+						) : (
+                            <Button id='connect-wallet-button' style={{color:"#78e861"}}>{shortenedAddress}</Button>
+						)}
 					</Nav>
 				</Navbar.Collapse>
 			</Container>
