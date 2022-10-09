@@ -2,21 +2,21 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract FatRat is Ownable, ERC1155Supply, ReentrancyGuard {
+contract FatRat is Ownable, ERC1155, ReentrancyGuard {
     using Strings for uint256;
     bytes32 public merkleRoot;
     string private baseTokenURI;
     uint256 private tokenId = 0;
     uint256 private mintPrice = .01 ether;
     mapping(address => bool) internal hasClaimed;
-
-    constructor(string memory _uri) public ERC1155(_uri) {}
+                
+    constructor() ERC1155('https://ipfs.io/ipfs/bafybeihjjkwdrxxjnuwevlqtqmh3iegcadc32sio4wmo7bv2gbf34qs34a/{id}.json'){}
 
     function whitelistMint(bytes32[] calldata merkleProof) external payable{
         require(!hasClaimed[msg.sender], "Already minted your FatRat NFT");
@@ -32,6 +32,10 @@ contract FatRat is Ownable, ERC1155Supply, ReentrancyGuard {
         hasClaimed[msg.sender] = true;
         _mint(msg.sender, tokenId, 1, "");
         tokenId++;
+    }
+
+    function teamMint(uint256 _amount) external onlyOwner {
+        _mint(msg.sender, tokenId, _amount, "");
     }
 
     function setMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
@@ -56,8 +60,7 @@ contract FatRat is Ownable, ERC1155Supply, ReentrancyGuard {
     }
 
     function uri(uint256 _tokenId) public view override returns (string memory) {
-        require(exists(tokenId), "URI doesn't exist for this token");
-        return string(abi.encodePacked(super.uri(tokenId), Strings.toString(tokenId)));
+        return string(abi.encodePacked(super.uri(_tokenId), Strings.toString(_tokenId)));
     }
 
     function withdraw() external onlyOwner nonReentrant{
