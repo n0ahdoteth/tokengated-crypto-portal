@@ -10,12 +10,7 @@ const AddInvestment = () => {
   const handleOnSubmit = (card) => {
     setCards([card, ...cards]);
     navigate('/strategies');
-    console.log(card)
   };
-
-  useEffect(()=>{
-    console.log(cards)
-  },[])
 
   return (
     <>

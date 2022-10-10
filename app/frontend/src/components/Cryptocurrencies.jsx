@@ -58,7 +58,6 @@ const Cryptocurrencies = ({ simplified }) => {
 					<tbody>
 						{cryptos?.map((currency) => (
 							<tr>
-								{console.log(currency.iconUrl)}
 								<td>{currency.rank}</td>
 								<td>
 									<img

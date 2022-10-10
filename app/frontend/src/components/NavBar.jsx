@@ -2,17 +2,14 @@ import { useState, useEffect } from 'react';
 import { Container, Nav, Navbar, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import logo from '../images/fatrat.png';
-import { ethers } from 'ethers';
 import Web3 from 'web3';
 import detectEthereumProvider from '@metamask/detect-provider';
 
 const NavBar = () => {
 	const [currentAccount, setCurrentAccount] = useState('');
-	const [error, setError] = useState('');
-	const [isOnGoerli, setIsOnGoerli] = useState();
 	const shortenedAddress =
 		currentAccount.slice(0, 5) + '...' + currentAccount.slice(35, 40);
-
+    const [isOnGoerli, setIsOnGoerli] = useState()
 	const { ethereum } = window;
 
 	const changeNetwork = async () => {
@@ -41,11 +38,15 @@ const NavBar = () => {
 		}
 	};
 
-	const handleNetworkSwitch = async () => {
-		setError();
-		await changeNetwork();
-		seeNetwork();
-	};
+    const web3 = new Web3("https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161")
+
+
+    // const revealMsg = async () => {
+    //     let signature = await web3.eth.personal.sign("Sign to verify that you own a Fat Rat", web3.utils.toChecksumAddress(curre));
+    //     let res = await fetch('/secret?signature='+signature)
+    //     let body = await res.text();
+    //     console.log(body)
+    // }
 
 	const connectWallet = async () => {
 		try {
@@ -86,10 +87,13 @@ const NavBar = () => {
 						</Link>
 
 						{currentAccount === '' ? (
-							<Button onClick={connectWallet} id='connect-wallet-button'>Connect Wallet</Button>
-
+							<Button onClick={connectWallet} id='connect-wallet-button'>
+								Connect Wallet
+							</Button>
 						) : (
-                            <Button id='connect-wallet-button' style={{color:"#78e861"}}>{shortenedAddress}</Button>
+							<Button id='connect-wallet-button' style={{ color: '#78e861' }}>
+								{shortenedAddress}
+							</Button>
 						)}
 					</Nav>
 				</Navbar.Collapse>
