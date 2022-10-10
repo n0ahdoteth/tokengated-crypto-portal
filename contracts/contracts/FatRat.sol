@@ -74,6 +74,3 @@ contract FatRat is Ownable, ERC1155, ReentrancyGuard {
     }
 
 }
-
-
-

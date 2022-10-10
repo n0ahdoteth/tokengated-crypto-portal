@@ -5,7 +5,6 @@ const main = async () => {
 	console.log('Contract deployed to: ', nftContract.address);
 };
 
-
 const runMain = async () => {
 	try {
 		await main();
