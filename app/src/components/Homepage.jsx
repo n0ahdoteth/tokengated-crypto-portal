@@ -1,18 +1,28 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import millify from 'millify';
 import { Typography, Statistic, Row } from 'antd';
-import { Button, Center } from '@chakra-ui/react';
+import { Container, Nav, Navbar, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useGetCryptosQuery } from '../services/cryptoApi';
 import { Cryptocurrencies, News } from '../components';
 import { Audio } from 'react-loader-spinner';
 import InvestmentHeader from './InvestmentHeader';
+import Web3 from 'web3'
 
 const { Title } = Typography;
 
 const Homepage = () => {
 	const { data, isFetching } = useGetCryptosQuery(10);
 	const globalStats = data?.data?.stats;
+    const [auth, setAuth] = useState(false)
+
+    const [currentAccount, setCurrentAccount] = useState('');
+	const shortenedAddress =
+		currentAccount.slice(0, 5) + '...' + currentAccount.slice(35, 40);
+	const { ethereum } = window;
+
+	useEffect(() => {}, [currentAccount]);
+
 	if (isFetching)
 		return (
 			<div className="audio-div">
@@ -20,15 +30,60 @@ const Homepage = () => {
 			</div>
 		);
 
+        const web3 = new Web3(window.ethereum);
+
+        const revealMsg = async () => {
+            let signature = await web3.eth.personal.sign(
+                'Sign to verify that you own a Fat Rat',
+                currentAccount
+            );
+            let res = await fetch('/secret?signature=' + signature);
+            let body = await res.text();
+            setAuth(body);
+
+            console.log(body);
+        };
+    
+        const connectWallet = async () => {
+            try {
+                if (!ethereum) {
+                    alert('Get MetaMask!');
+                    return;
+                }
+                const accounts = await ethereum.request({
+                    method: 'eth_requestAccounts',
+                });
+                setCurrentAccount(accounts[0]);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
 	return (
+
+
 		<>
-			<Title
+            {currentAccount === '' ? (
+							<Button onClick={connectWallet} id='connect-wallet-button'>
+								Connect Wallet
+							</Button>
+						) : (
+							<>
+								<Button id='connect-wallet-button' style={{ color: '#78e861' }}>
+									{shortenedAddress}
+								</Button>
+								<Button onClick={revealMsg}>Verify Assets</Button>
+							</>
+			)}
+
+        {auth ? <><Title
 				level={2}
 				className='heading'
 				style={{ textAlign: 'center', color: '#0071bd', marginTop: '3%' }}
 			>
 				Global Crypto Stats
 			</Title>
+            
 			<Row id='stats'>
 				<Statistic
 					style={{
@@ -68,7 +123,8 @@ const Homepage = () => {
 				</Title>
 			</div>
 			<News simplified />
-			<InvestmentHeader />
+			<InvestmentHeader /> </> : <p>You do not own a Fat Rat</p>}
+			
 		</>
 	);
 };

@@ -13,15 +13,19 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, '..', 'build')));
 app.use(express.static('public'));
 
-app.get('/secret', async (req, res) => {
+app.get('/*', async (req, res) => {
 	let address = await web3.eth.accounts.recover(
 		'Sign to verify that you own a Fat Rat',
 		req.query.signature
 	);
-	let balance = Number(
-		await contract.methods.balanceOf(address, 0).call()
-	);
+	let balance = Number(await contract.methods.balanceOf(address, 0).call());
 	console.log('Balance is ', balance);
+
+	if (balance > 0) {
+		res.send("true");
+	} else {
+		res.send("false");
+	}
 });
 
 app.listen(port, () => {

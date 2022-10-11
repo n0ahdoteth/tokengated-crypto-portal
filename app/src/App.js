@@ -21,7 +21,19 @@ import InvestmentContext from './context/InvestmentContext';
 const App = () => {
 	const [isConnected, setIsConnected] = useState(true);
 	const [cards, setCards] = useLocalStorage('cards', []);
+    const [auth, setAuth] = useState("test");
 	document.body.style = 'background: #1d113d;';
+
+    //  const revealMsg = async () => {
+    //     let signature = await web3.eth.personal.sign("Sign to verify that you own a Fat Rat", currentAccount);
+    //     let res = await fetch('/secret?signature=' + signature);
+    //     let body = await res.text();
+    //     console.log(body);
+    // }
+
+
+
+   
 
 	return (
 		<div className='app-bg'>
