@@ -1,8 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Button } from '@chakra-ui/react';
-import { NavBar, Homepage, Cryptocurrencies, News, AddInvestment, EditInvestment, InvestmentStrategy } from './components';
+import {
+	NavBar,
+	Homepage,
+	Cryptocurrencies,
+	News,
+	AddInvestment,
+	EditInvestment,
+	InvestmentStrategy,
+} from './components';
 import './App.css';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import 'font-awesome/css/font-awesome.min.css';
@@ -11,11 +20,10 @@ import InvestmentContext from './context/InvestmentContext';
 
 const App = () => {
 	const [isConnected, setIsConnected] = useState(true);
-
 	const [cards, setCards] = useLocalStorage('cards', []);
 	document.body.style = 'background: #1d113d;';
 
-	return (        
+	return (
 		<div className='app-bg'>
 			{isConnected ? (
 				<>
