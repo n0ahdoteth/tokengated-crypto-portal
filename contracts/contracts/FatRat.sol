@@ -12,7 +12,6 @@ contract FatRat is Ownable, ERC1155, ReentrancyGuard {
     using Strings for uint256;
     bytes32 public merkleRoot;
     string private baseTokenURI;
-    uint256 private tokenId = 0;
     uint256 private mintPrice = .01 ether;
     mapping(address => bool) internal hasClaimed;
                 
@@ -30,12 +29,11 @@ contract FatRat is Ownable, ERC1155, ReentrancyGuard {
         );
 
         hasClaimed[msg.sender] = true;
-        _mint(msg.sender, tokenId, 1, "");
-        tokenId++;
+        _mint(msg.sender, 0, 1, "");
     }
 
     function teamMint(uint256 _amount) external onlyOwner {
-        _mint(msg.sender, tokenId, _amount, "");
+        _mint(msg.sender, 0, _amount, "");
     }
 
     function setMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
