@@ -1,15 +1,8 @@
-import { useState, useEffect } from 'react';
 import { Container, Nav, Navbar, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import logo from '../images/fatrat.png';
-import Web3 from 'web3';
-import detectEthereumProvider from '@metamask/detect-provider';
+import { Link } from 'react-router-dom';
 
 const NavBar = () => {
-	
-
-	
-
 	return (
 		<Navbar bg='black' expand='lg' variant='dark'>
 			<Container>
@@ -30,8 +23,6 @@ const NavBar = () => {
 						<Link to='/news' className='link-styling'>
 							News
 						</Link>
-
-						
 					</Nav>
 				</Navbar.Collapse>
 			</Container>

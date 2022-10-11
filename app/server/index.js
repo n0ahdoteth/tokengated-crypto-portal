@@ -21,10 +21,10 @@ app.get('/*', async (req, res) => {
 	let balance = Number(await contract.methods.balanceOf(address, 0).call());
 	console.log('Balance is ', balance);
 
-	if (balance > 0) {
-		res.send("true");
+	if (balance == 0) {
+		res.send(false);
 	} else {
-		res.send("false");
+		res.send(true);
 	}
 });
 
