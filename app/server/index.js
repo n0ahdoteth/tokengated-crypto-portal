@@ -29,5 +29,5 @@ app.listen(port, () => {
 });
 
 const ABI = require('./abi.json');
-const ADDRESS = '0x02D44A22Cc670C8D9e6fbBD3d3c2CA16D6539884';
+const ADDRESS = '0x0158A3AA1fAdeDec8a770f9D372EBeDdcE705e35';
 let contract = new web3.eth.Contract(ABI, ADDRESS);

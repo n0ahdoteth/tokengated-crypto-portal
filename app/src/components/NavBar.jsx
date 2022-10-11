@@ -12,6 +12,8 @@ const NavBar = () => {
     const [isOnGoerli, setIsOnGoerli] = useState()
 	const { ethereum } = window;
 
+    useEffect(() => {}, [currentAccount])
+
 	const changeNetwork = async () => {
 		try {
 			if (!ethereum) throw new Error('No crypto wallet found');
@@ -38,15 +40,15 @@ const NavBar = () => {
 		}
 	};
 
-    const web3 = new Web3("https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161")
+    const web3 = new Web3(window.ethereum);
 
 
-    // const revealMsg = async () => {
-    //     let signature = await web3.eth.personal.sign("Sign to verify that you own a Fat Rat", web3.utils.toChecksumAddress(curre));
-    //     let res = await fetch('/secret?signature='+signature)
-    //     let body = await res.text();
-    //     console.log(body)
-    // }
+    const revealMsg = async () => {
+        let signature = await web3.eth.personal.sign("Sign to verify that you own a Fat Rat", currentAccount);
+        let res = await fetch('/secret?signature=' + signature);
+        let body = await res.text();
+        console.log(body);
+    }
 
 	const connectWallet = async () => {
 		try {
@@ -91,9 +93,12 @@ const NavBar = () => {
 								Connect Wallet
 							</Button>
 						) : (
+                            <>
 							<Button id='connect-wallet-button' style={{ color: '#78e861' }}>
 								{shortenedAddress}
 							</Button>
+                            <Button onClick={revealMsg}>Verify Assets</Button>
+                            </>
 						)}
 					</Nav>
 				</Navbar.Collapse>
