@@ -21,7 +21,7 @@ import Web3 from 'web3'
 const App = () => {
 	const [isConnected, setIsConnected] = useState(true);
 	const [cards, setCards] = useLocalStorage('cards', []);
-	const [auth, setAuth] = useState(false);
+	const [auth, setAuth] = useState(true);
 	const [currentAccount, setCurrentAccount] = useState('');
 	const shortenedAddress =
 		currentAccount.slice(0, 5) + '...' + currentAccount.slice(35, 40);
