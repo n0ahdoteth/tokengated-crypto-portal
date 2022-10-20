@@ -60,20 +60,8 @@ const Homepage = () => {
 
 	return (
 		<>
-			{/* {currentAccount === '' ? (
-				<Button onClick={connectWallet} id='connect-wallet-button'>
-					Connect Wallet
-				</Button>
-			) : (
-				<>
-					<Button id='connect-wallet-button' style={{ color: '#78e861' }}>
-						{shortenedAddress}
-					</Button>
-					<Button onClick={revealMsg}>Verify Assets</Button>
-				</>
-			)} */}
-
-			
+		
+	
 				<>
 					<Title
 						level={2}

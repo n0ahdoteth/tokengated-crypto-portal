@@ -13,19 +13,27 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, '..', 'build')));
 app.use(express.static('public'));
 
-app.get('/*', async (req, res) => {
+if (module.hot) {
+	module.hot.accept();
+}
+
+app.get('/secret', async (req, res) => {
 	let address = await web3.eth.accounts.recover(
 		'Sign to verify that you own a Fat Rat',
 		req.query.signature
 	);
 	let balance = Number(await contract.methods.balanceOf(address, 0).call());
-	console.log('Balance is ', balance);
 
 	if (balance == 0) {
-		res.send(false);
+		res.status(200).send(false);
 	} else {
-		res.send(true);
+		res.status(200).send(true);
 	}
+	
+});
+
+app.get('*', (req, res) => {
+	res.status(404).redirect('/');
 });
 
 app.listen(port, () => {

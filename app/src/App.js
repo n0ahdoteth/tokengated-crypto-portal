@@ -16,20 +16,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import 'font-awesome/css/font-awesome.min.css';
 import useLocalStorage from './hooks/useLocalStorage';
 import InvestmentContext from './context/InvestmentContext';
-import Web3 from 'web3'
+import Web3 from 'web3';
 
 const App = () => {
-	const [isConnected, setIsConnected] = useState(true);
 	const [cards, setCards] = useLocalStorage('cards', []);
-	const [auth, setAuth] = useState(true);
+	const [auth, setAuth] = useState(false);
 	const [currentAccount, setCurrentAccount] = useState('');
 	const shortenedAddress =
 		currentAccount.slice(0, 5) + '...' + currentAccount.slice(35, 40);
 	const { ethereum } = window;
+	const [owns, setOwns] = useState('');
 
 	document.body.style = 'background: #1d113d;';
-    const web3 = new Web3(window.ethereum);
-
+	const web3 = new Web3(window.ethereum);
 
 	const revealMsg = async () => {
 		let signature = await web3.eth.personal.sign(
@@ -40,7 +39,9 @@ const App = () => {
 		let body = await res.text();
 		let isTrueSet = body === 'true';
 		console.log(isTrueSet);
+		console.log(body);
 		setAuth(isTrueSet);
+		if (!isTrueSet) setOwns('You do not own one');
 	};
 
 	const connectWallet = async () => {
@@ -58,19 +59,23 @@ const App = () => {
 		}
 	};
 
-	// Add sig verification to render components on the Appd
-
 	return (
 		<div className='app-bg'>
 			<div className='app'>
 				<div className='main'>
 					{currentAccount === '' ? (
-						<Button onClick={connectWallet} id='connect-wallet-button'>
+						<Button
+							onClick={connectWallet}
+							id='connect-wallet-button'
+						>
 							Connect Wallet
 						</Button>
 					) : (
 						<>
-							<Button id='connect-wallet-button' style={{ color: '#78e861' }}>
+							<Button
+								id='connect-wallet-button'
+								style={{ color: '#78e861' }}
+							>
 								{shortenedAddress}
 							</Button>
 							<Button onClick={revealMsg}>Verify Assets</Button>
@@ -79,41 +84,80 @@ const App = () => {
 
 					{auth ? (
 						<div>
-							{console.log(auth)}
-							<NavBar auth={auth}/>
+							<NavBar auth={auth} />
 							<div className='routes'>
 								<Routes>
-									<Route exact path='/' element={<Homepage auth={auth} />} />
+									<Route
+										exact
+										path='/'
+										element={<Homepage auth={auth} />}
+									/>
 									<Route
 										exact
 										path='/cryptocurrencies'
-										element={<Cryptocurrencies auth={auth} />}
+										element={
+											<Cryptocurrencies auth={auth} />
+										}
 									/>
-									<Route exact path='/news' element={<News />} />
+									<Route
+										exact
+										path='/news'
+										element={<News />}
+									/>
 								</Routes>
 							</div>
 							<FontAwesomeIcon icon='fa-brands fa-twitter' />
 
 							<div className='routes'>
-								{/* <NavBar /> */}
 								<div className='main-content'>
-									<InvestmentContext.Provider value={{ cards, setCards }}>
+									<InvestmentContext.Provider
+										value={{ cards, setCards }}
+									>
 										<Routes>
 											<Route
-												element={<InvestmentStrategy auth={auth} />}
+												element={
+													<InvestmentStrategy
+														auth={auth}
+													/>
+												}
 												exact
 												path='/strategies'
 											/>
-											<Route exact path='/add' element={<AddInvestment auth={auth} />} />
-											<Route element={<EditInvestment auth={auth} />} path='/edit/:id' />
-											<Route component={() => <Navigate to='/' />} />
+											<Route
+												exact
+												path='/add'
+												element={
+													<AddInvestment
+														auth={auth}
+													/>
+												}
+											/>
+											<Route
+												element={
+													<EditInvestment
+														auth={auth}
+													/>
+												}
+												path='/edit/:id'
+											/>
+											<Route
+												component={() => (
+													<Navigate to='/' />
+												)}
+											/>
 										</Routes>
 									</InvestmentContext.Provider>
 								</div>
 							</div>
 						</div>
 					) : (
-						<p style={{color:"white"}}>You must be holding a Fat Rat NFT to access the site.</p>
+						<>
+							<p style={{ color: 'white' }}>
+								You must be holding a Fat Rat NFT to access the
+								site. Please connect and verify.
+							</p>
+							<p style={{ color: 'white' }}>{owns}</p>
+						</>
 					)}
 				</div>
 			</div>
