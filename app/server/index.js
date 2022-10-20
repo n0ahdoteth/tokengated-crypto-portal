@@ -6,9 +6,25 @@ const port = 4000;
 const web3 = new Web3(
 	'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'
 );
+const dotenv = require('dotenv');
+dotenv.config();
+
+const mongoose = require('mongoose');
 const cors = require('cors');
 
 app.use(cors());
+
+mongoose
+	.connect(process.env.DB_CONNECT, {
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+	})
+	.then(() => {
+		console.log('Connected to DB Successfuly');
+	})
+	.catch((e) => {
+		console.log(e);
+	});
 
 app.use(express.static(path.join(__dirname, '..', 'build')));
 app.use(express.static('public'));
@@ -23,13 +39,11 @@ app.get('/secret', async (req, res) => {
 		req.query.signature
 	);
 	let balance = Number(await contract.methods.balanceOf(address, 0).call());
-
 	if (balance == 0) {
 		res.status(200).send(false);
 	} else {
 		res.status(200).send(true);
 	}
-	
 });
 
 app.get('*', (req, res) => {
